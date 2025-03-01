@@ -119,7 +119,6 @@
 	
 	// Language Switcher Functionality
     $(document).ready(function () {
-        console.log('Script loaded');
 
         const langElements = document.querySelectorAll('[data-lang]');
         const currentLang = localStorage.getItem('language') || 'en';
@@ -138,6 +137,15 @@
                     console.warn(`Missing translation for key: ${key}`);
                 }
             });
+
+            langElements.forEach(btn => {
+                btn.classList.remove('btn-outline-primary');
+                btn.classList.add('btn-outline-secondary');
+            });
+
+            const selectedButton = document.querySelector(`[data-lang="${lang}"]`);
+            selectedButton.classList.remove('btn-outline-secondary');
+            selectedButton.classList.add('btn-outline-primary');
         }
 
         langElements.forEach(element => {
@@ -151,8 +159,17 @@
         });
 
         loadLanguage(currentLang);
-    });
 
+        langElements.forEach(btn => {
+            if (btn.getAttribute('data-lang') === currentLang) {
+                btn.classList.remove('btn-outline-secondary');
+                btn.classList.add('btn-outline-primary');
+            } else {
+                btn.classList.remove('btn-outline-primary');
+                btn.classList.add('btn-outline-secondary');
+            }
+        });
+    });
 
 })(jQuery);
 
