@@ -114,34 +114,45 @@
             '<i class="bi bi-arrow-right"></i>'
         ],
     });
-    
+
+
 	
 	// Language Switcher Functionality
     $(document).ready(function () {
+        console.log('Script loaded');
+
         const langElements = document.querySelectorAll('[data-lang]');
         const currentLang = localStorage.getItem('language') || 'en';
 
         function loadLanguage(lang) {
-            fetch(`lang/${lang}.json`)
-                .then(response => response.json())
-                .then(data => {
-                    document.querySelectorAll('[data-translate]').forEach(element => {
-                        const key = element.getAttribute('data-translate');
-                        element.textContent = data[key];
-                    });
-                });
+            if (!translations[lang]) {
+                console.error(`Language "${lang}" not found.`);
+                return;
+            }
+
+            document.querySelectorAll('[data-translate]').forEach(element => {
+                const key = element.getAttribute('data-translate');
+                if (translations[lang][key]) {
+                    element.innerText = translations[lang][key];
+                } else {
+                    console.warn(`Missing translation for key: ${key}`);
+                }
+            });
         }
 
         langElements.forEach(element => {
             element.addEventListener('click', function () {
                 const selectedLang = this.getAttribute('data-lang');
-                localStorage.setItem('language', selectedLang);
-                loadLanguage(selectedLang);
+                if (translations[selectedLang]) {
+                    localStorage.setItem('language', selectedLang);
+                    loadLanguage(selectedLang);
+                }
             });
         });
 
         loadLanguage(currentLang);
     });
+
 
 })(jQuery);
 
